@@ -1,4 +1,5 @@
 "use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 var core;
 (function (core) {
     function addLinkEvents() {
@@ -145,41 +146,11 @@ var core;
                 if (confirm("Are you sure?")) {
                     localStorage.removeItem($(this).val().toString());
                 }
-                loadLink("contact-list");
+                location.href = '/contact-list';
             });
         }
         $("#addButton").on("click", function () {
-            loadLink("edit");
-        });
-    }
-    function displayEdit() {
-        let key = router.LinkData;
-        let contact = new core.Contact();
-        if (key != undefined && key != "") {
-            contact.deserialize(localStorage.getItem(key));
-            $("#fullName").val(contact.FullName);
-            $("#contactNumber").val(contact.ContactNumber);
-            $("#emailAddress").val(contact.EmailAddress);
-        }
-        else {
-            $("main>div>h1").text("Add Contact");
-            $("#editButton").html(`<i class="fas fa-plus-circle fa-lg"></i> Add`);
-        }
-        formValidation();
-        $("#editButton").on("click", function () {
-            if (key == "") {
-                key = contact.FullName.substring(0, 1) + Date.now();
-            }
-            contact.FullName = $("#fullName").val().toString();
-            contact.ContactNumber = $("#contactNumber").val().toString();
-            contact.EmailAddress = $("#emailAddress").val().toString();
-            if (contact.serialize()) {
-                localStorage.setItem(key, contact.serialize());
-            }
-            loadLink("contact-list");
-        });
-        $("#cancelButton").on("click", function () {
-            loadLink("contact-list");
+            location.href = '/edit';
         });
     }
     function displayLogin() {
@@ -201,7 +172,7 @@ var core;
                 if (success) {
                     sessionStorage.setItem("user", newUser.serialize());
                     messageArea.removeAttr("class").hide();
-                    loadLink("contact-list");
+                    $("form").trigger("submit");
                 }
                 else {
                     username.trigger("focus").trigger("select");
@@ -242,27 +213,26 @@ var core;
     }
     function display404() {
     }
-    function ActiveLinkCallBack(activeLink) {
-        switch (activeLink) {
-            case "home": return displayHome;
-            case "about": return displayAbout;
-            case "projects": return displayProjects;
-            case "services": return displayServices;
-            case "contact": return displayContact;
-            case "contact-list": return displayContactList;
-            case "edit": return displayEdit;
-            case "login": return displayLogin;
-            case "register": return displayRegister;
-            case "404": return display404;
-            default:
-                console.error("ERROR: callback does not exist: " + activeLink);
-                break;
-        }
-    }
     function Start() {
-        loadHeader(router.ActiveLink);
-        loadContent(router.ActiveLink, ActiveLinkCallBack(router.ActiveLink));
-        loadFooter();
+        let page = router.ActiveLink;
+        switch (page) {
+            case 'home':
+                break;
+            case 'about':
+                break;
+            case 'projects':
+                break;
+            case 'services':
+                break;
+            case 'contact':
+                displayContact;
+                break;
+            case 'contact-list':
+                displayContactList;
+                break;
+            case 'login':
+                displayLogin;
+        }
     }
     window.addEventListener("load", Start);
 })(core || (core = {}));

@@ -1,3 +1,4 @@
+import { beforeRead } from "@popperjs/core";
 
 namespace core
 {
@@ -272,75 +273,78 @@ namespace core
            {
             localStorage.removeItem($(this).val().toString());
            }
-           loadLink("contact-list"); // refresh the page
+          //  loadLink("contact-list"); 
+          // refresh the page
+          location.href = '/contact-list';
          });
       }
 
       $("#addButton").on("click", function() 
       {
-      loadLink("edit");
+      // loadLink("edit");
+      location.href = '/edit';
       });
     }
 
-    function displayEdit(): void
-    {
-      let key = router.LinkData;
+    // function displayEdit(): void
+    // {
+    //   let key = router.LinkData;
 
-      let contact = new core.Contact();
+    //   let contact = new core.Contact();
 
-      // check to ensure that the key is not empty
-      if(key != undefined && key != "")
-      {
-        // get contact info from localStorage
-        contact.deserialize(localStorage.getItem(key));
+    //   // check to ensure that the key is not empty
+    //   if(key != undefined && key != "")
+    //   {
+    //     // get contact info from localStorage
+    //     contact.deserialize(localStorage.getItem(key));
 
-        // display contact information in the form
-        $("#fullName").val(contact.FullName);
-        $("#contactNumber").val(contact.ContactNumber);
-        $("#emailAddress").val(contact.EmailAddress);
-      }
-      else
-      {
-        // modify the page so that it shows "Add Contact" in the header 
-        $("main>div>h1").text("Add Contact");
-        // modify edit button so that it shows "Add" as well as the appropriate icon
-        $("#editButton").html(`<i class="fas fa-plus-circle fa-lg"></i> Add`);
-      }
+    //     // display contact information in the form
+    //     $("#fullName").val(contact.FullName);
+    //     $("#contactNumber").val(contact.ContactNumber);
+    //     $("#emailAddress").val(contact.EmailAddress);
+    //   }
+    //   else
+    //   {
+    //     // modify the page so that it shows "Add Contact" in the header 
+    //     $("main>div>h1").text("Add Contact");
+    //     // modify edit button so that it shows "Add" as well as the appropriate icon
+    //     $("#editButton").html(`<i class="fas fa-plus-circle fa-lg"></i> Add`);
+    //   }
 
-      // form validation
-      formValidation();
+    //   // form validation
+    //   formValidation();
       
-     $("#editButton").on("click", function() 
-        {
-            // check to see if key is empty
-          if(key == "")
-          {
-            // create a new key
-            key = contact.FullName.substring(0, 1) + Date.now();
-          }
+    //  $("#editButton").on("click", function() 
+    //     {
+    //         // check to see if key is empty
+    //       if(key == "")
+    //       {
+    //         // create a new key
+    //         key = contact.FullName.substring(0, 1) + Date.now();
+    //       }
 
-          // copy contact info from form to contact object
-          contact.FullName = $("#fullName").val().toString();
-          contact.ContactNumber = $("#contactNumber").val().toString();
-          contact.EmailAddress = $("#emailAddress").val().toString();
+    //       // copy contact info from form to contact object
+    //       contact.FullName = $("#fullName").val().toString();
+    //       contact.ContactNumber = $("#contactNumber").val().toString();
+    //       contact.EmailAddress = $("#emailAddress").val().toString();
 
-          if(contact.serialize())
-          {
-            // add the contact info to localStorage
-            localStorage.setItem(key, contact.serialize());
-          }
+    //       if(contact.serialize())
+    //       {
+    //         // add the contact info to localStorage
+    //         localStorage.setItem(key, contact.serialize());
+    //       }
 
-          // return to the contact list
-          loadLink("contact-list");
+    //       // return to the contact list
+    //       loadLink("contact-list");
           
-        });
+    //     });
 
-      $("#cancelButton").on("click", function()
-      {
-        // return to the contact list
-        loadLink("contact-list");
-      });
-    }
+    //   $("#cancelButton").on("click", function()
+    //   {
+    //     // return to the contact list
+    //     loadLink("contact-list");
+    //   });
+    // }
 
     function displayLogin():void
     {
@@ -378,7 +382,9 @@ namespace core
             messageArea.removeAttr("class").hide();
 
             // redirect user to secure area - contact-list.html
-            loadLink("contact-list");
+            // loadLink("contact-list");
+
+            $("form").trigger("submit");
           }
           else
           {
@@ -458,31 +464,31 @@ namespace core
 
     }
 
-    /**
-     * This function associates and returns a related callback to a route
-     *
-     * @param {string} activeLink
-     * @returns {Function}
-     */
-    function ActiveLinkCallBack(activeLink:string): Function
-    {
-      switch (activeLink) 
-      {
-        case "home": return displayHome;
-        case "about": return displayAbout;
-        case "projects": return displayProjects;
-        case "services": return displayServices;
-        case "contact": return displayContact;
-        case "contact-list": return displayContactList;
-        case "edit": return displayEdit;
-        case "login": return displayLogin;
-        case "register": return displayRegister;
-        case "404": return display404;
-        default:
-          console.error("ERROR: callback does not exist: " + activeLink);
-          break;
-      }
-    }
+    // /**
+    //  * This function associates and returns a related callback to a route
+    //  *
+    //  * @param {string} activeLink
+    //  * @returns {Function}
+    //  */
+    // function ActiveLinkCallBack(activeLink:string): Function
+    // {
+    //   switch (activeLink) 
+    //   {
+    //     case "home": return displayHome;
+    //     case "about": return displayAbout;
+    //     case "projects": return displayProjects;
+    //     case "services": return displayServices;
+    //     case "contact": return displayContact;
+    //     case "contact-list": return displayContactList;
+    //     case "edit": return displayEdit;
+    //     case "login": return displayLogin;
+    //     case "register": return displayRegister;
+    //     case "404": return display404;
+    //     default:
+    //       console.error("ERROR: callback does not exist: " + activeLink);
+    //       break;
+    //   }
+    // }
 
     /**
      * This is the entry point for our program
@@ -490,11 +496,34 @@ namespace core
      */
     function Start(): void
     {
-        loadHeader(router.ActiveLink);
+        // loadHeader(router.ActiveLink);
       
-        loadContent(router.ActiveLink, ActiveLinkCallBack(router.ActiveLink));
+        // loadContent(router.ActiveLink, ActiveLinkCallBack(router.ActiveLink));
 
-        loadFooter();
+        // loadFooter();
+
+        let page = router.ActiveLink;
+
+        switch(page)
+        {
+          case 'home': 
+            break;
+          case 'about':
+            break;
+          case 'projects':
+            break;
+          case 'services':
+            break;
+          case 'contact':
+            displayContact;
+            break;
+          case 'contact-list':
+            displayContactList;
+            break;
+          case 'login':
+            displayLogin;
+        }
+
     }
 
     window.addEventListener("load", Start);
