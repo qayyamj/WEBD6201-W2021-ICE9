@@ -1,61 +1,6 @@
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
 var core;
 (function (core) {
-    function addLinkEvents() {
-        $("ul>li>a").off("click");
-        $("ul>li>a").off("mouseover");
-        $("ul>li>a").on("click", function () {
-            loadLink($(this).attr("id"));
-        });
-        $("ul>li>a").on("mouseover", function () {
-            $(this).css('cursor', 'pointer');
-        });
-    }
-    function highlightActiveLink(link) {
-        $(`#${router.ActiveLink}`).removeClass("active");
-        if (link == "logout") {
-            sessionStorage.clear();
-            router.ActiveLink = "login";
-        }
-        else {
-            router.ActiveLink = link;
-        }
-        $(`#${router.ActiveLink}`).addClass("active");
-    }
-    function loadLink(link, data = "") {
-        highlightActiveLink(link);
-        router.LinkData = data;
-        loadContent(router.ActiveLink, ActiveLinkCallBack(router.ActiveLink));
-        history.pushState({}, "", router.ActiveLink);
-    }
-    function loadHeader(pageName) {
-        $.get("./components/header.html", function (data) {
-            $("header").html(data);
-            $(`#${pageName}`).addClass("active");
-            addLinkEvents();
-        });
-    }
-    function loadContent(pageName, callback) {
-        $.get(`./content/${pageName}.html`, function (data) {
-            $("main").html(data);
-            toggleLogin();
-            callback();
-        });
-    }
-    function loadFooter() {
-        $.get("./components/footer.html", function (data) {
-            $("footer").html(data);
-        });
-    }
-    function displayHome() {
-    }
-    function displayAbout() {
-    }
-    function displayProjects() {
-    }
-    function displayServices() {
-    }
     function testFullName() {
         let messageArea = $("#messageArea").hide();
         let fullNamePattern = /([A-Z][a-z]{1,25})+(\s|,|-)([A-Z][a-z]{1,25})+(\s|,|-)*/;
@@ -114,7 +59,7 @@ var core;
                     localStorage.setItem(key, contact.serialize());
                 }
             }
-            loadLink("contact");
+            location.href = '/contact';
         });
     }
     function displayContactList() {
@@ -140,7 +85,7 @@ var core;
             }
             contactList.innerHTML = data;
             $("button.edit").on("click", function () {
-                loadLink("edit", $(this).val().toString());
+                location.href = '/edit';
             });
             $("button.delete").on("click", function () {
                 if (confirm("Are you sure?")) {
@@ -182,56 +127,44 @@ var core;
         });
         $("#cancelButton").on("click", function () {
             document.forms[0].reset();
-            loadLink("home");
+            location.href = '/home';
         });
     }
-    function displayRegister() {
-    }
-    function toggleLogin() {
-        let contactListLink = $("#contactListLink")[0];
-        if (sessionStorage.getItem("user")) {
-            $("#loginListItem").html(`<a id="logout" class="nav-link" aria-current="page"><i class="fas fa-sign-out-alt"></i> Logout</a>`);
-            if (!contactListLink) {
-                $(`<li id="contactListLink" class="nav-item">
-          <a id="contact-list" class="nav-link" aria-current="page"><i class="fas fa-users fa-lg"></i> Contact List</a>
-        </li>`).insertBefore("#loginListItem");
-            }
-        }
-        else {
-            $("#loginListItem").html(`<a id="login" class="nav-link" aria-current="page"><i class="fas fa-sign-in-alt"></i> Login</a>`);
-            if (contactListLink) {
-                $("#contactListLink").remove();
-            }
-        }
-        addLinkEvents();
-        highlightActiveLink(router.ActiveLink);
+    function performLogout() {
+        sessionStorage.clear();
+        location.href = '/login';
     }
     function authGuard() {
         if (!sessionStorage.getItem("user")) {
-            loadLink("login");
+            location.href = '/login';
         }
     }
     function display404() {
     }
     function Start() {
-        let page = router.ActiveLink;
-        switch (page) {
+        let pageID = $("body")[0].getAttribute("id");
+        switch (pageID) {
             case 'home':
                 break;
             case 'about':
                 break;
-            case 'projects':
-                break;
             case 'services':
                 break;
-            case 'contact':
-                displayContact;
+            case 'projects':
                 break;
-            case 'contact-list':
-                displayContactList;
+            case 'contact':
+                displayContact();
                 break;
             case 'login':
-                displayLogin;
+                displayLogin();
+                break;
+            case 'logout':
+                performLogout();
+            case 'register':
+                break;
+            case 'contact-list':
+                displayContactList();
+                break;
         }
     }
     window.addEventListener("load", Start);
