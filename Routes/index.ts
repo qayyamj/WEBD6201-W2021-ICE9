@@ -49,23 +49,26 @@ router.post('/login', function(req, res, next)
   res.render('index', { title: 'Contact List', page: 'contact-list', displayName: req.body.username});
 });
 
+
 /* GET register page - with /register */
 router.get('/register', function(req, res, next) 
 {
   res.render('index', { title: 'Register', page: 'register', displayName: ''    });
 });
 
-/* temprary routes - mocking up login / register and contact-list pages */
-/* GET contact list page - with /contact-list */
+/* temporary routes - mocking up login / register and contact-list related pages */
+/* GET register page - with /register */
 router.get('/contact-list', function(req, res, next) 
 {
-  res.render('index', { title: 'Contact List', page: 'contact-list', displayName: 'temp'  });
+    res.render('index', { title: 'Contact List', page: 'contact-list', displayName: 'temp'  });
 });
 
-/* GET logout page - with /logout */
+/* GET login page - with /login */
 router.get('/logout', function(req, res, next) 
 {
   res.render('index', { title: 'Logout', page: 'logout', displayName: ''    });
 });
+
+
 
 module.exports = router;
