@@ -1,11 +1,11 @@
-// Import 3rd party modules
+// importing 3rd party modules
 import createError = require('http-errors');
 import express = require('express');
 import path = require('path');
 import cookieParser = require('cookie-parser');
 import logger = require('morgan');
 
-// Configuration
+// configuration
 const indexRouter = require('./Routes/index');
 const app = express();
 
@@ -17,7 +17,7 @@ app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
-app.use(express.static(path.join(__dirname, 'Public')));
+app.use(express.static(path.join(__dirname, 'Client')));
 app.use(express.static(path.join(__dirname, 'node_modules')));
 
 app.use('/', indexRouter);
@@ -30,8 +30,6 @@ app.use(function(req, res, next) {
 // error handler
 app.use(function(err:createError.HttpError, req:express.Request, res:express.Response, next:express.NextFunction) {
   // set locals, only providing error in development
-  res.locals.message = err.message;
-  res.locals.error = req.app.get('env') === 'development' ? err : {};
 
   let message = err.message;
   let error = req.app.get('env') === 'development' ? err : {};
